@@ -30,13 +30,16 @@ export DECK_KONNECT_TOKEN="$KONNECT_PAT"
 export DECK_KONNECT_CONTROL_PLANE_NAME="$DECK_KONNECT_CONTROL_PLANE_NAME"
 
 # Hier wordt de sync met Konnect uitgevoerd aan de hand van 'deck'
-#  - De configuratie file(s) binnen 'config' worden verstuurd naar de Control Plane Node binnen Konnect
-#  - Hierdoor worden de services, routes en plugins geactiveerd op de gevraagde Kong gateway
-echo "deck sync wordt uitgevoerd..."
-for yaml_file in config/*.yml; do
-  echo "Syncen van ${yaml_file}..."
-  deck gateway sync --konnect-addr https://eu.api.konghq.com "$yaml_file"
-done
+# De configuratie file binnen 'config' wordt verstuurd naar de control plane node binnen Konnect, waardoor de services, routes en plugins geactiveerd worden op de gevraagde Kong gateway
+yaml_file="config/Kong_AI-Gateway_PoC.yml"
+
+if [ ! -f "$yaml_file" ]; then
+  echo "Configuratiebestand ${yaml_file} niet gevonden."
+  exit 1
+fi
+
+echo "Syncen van ${yaml_file}..."
+deck gateway sync --konnect-addr https://eu.api.konghq.com "$yaml_file"
 
 # Als alles goed gaat krijg je deze melding
 echo "Sync compleet! Je configuratie is nu live binnen Konnect."
