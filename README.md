@@ -25,7 +25,7 @@ Zorg er daarnaast voor dat je de uitleg in de bachelorproef gevolgd hebt omtrent
 
 - `config/`
 
-Bevat het configuratiebestand `Kong_AI-Gateway_PoC.template.yml`, waarin alle services, routes en plugins gedefinieerd zijn. Dit bestand bevat een heleboel placeholders die vervangen zullen worden door de waarden, gelinkt aan de variabelen, in het `.env` bestand. Dit gebeurt aan de hand van het script genaamd `generate_PoC_config.sh`, dat zich ook in deze map bevindt. Indien dit script uitgevoerd wordt, resulteert dit in het genereren van het effectieve configuratiebestand genaamd `Kong_AI-Gateway_PoC.yml`.
+Bevat het configuratiebestand `Kong_AI-Gateway_PoC.template.yml`, waarin alle services, routes en plugins gedefinieerd zijn. Dit bestand bevat een heleboel placeholders die vervangen zullen worden door de waarden, gelinkt aan de variabelen, in het `.env` bestand. Dit gebeurt aan de hand van het script genaamd `generate_PoC_config.sh`. Indien dit script uitgevoerd wordt, resulteert dit in het genereren van het effectieve configuratiebestand genaamd `Kong_AI-Gateway_PoC.yml`.
 
     - `Kong_AI-Gateway_PoC.template.yml`
 
