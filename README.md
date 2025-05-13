@@ -10,7 +10,7 @@ Zorg dat volgende tools geïnstalleerd zijn:
 
 - Docker & Docker Compose  
 - Bash (Linux/macOS of Git Bash op Windows)
-- [deck](https://github.com/kong/deck): CLI-tool van Kong
+- [deck](https://github.com/kong/deck) (CLI-tool van Kong)
 - [Postman](https://www.postman.com/downloads/)
 
 ### deck installeren (Windows)
