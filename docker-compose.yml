@@ -1,0 +1,54 @@
+version: '3.9' # Versie van Docker Compose syntax
+
+services:
+  kong-dp:
+    image: kong/kong-gateway:${VERSION} # Kong Gateway image, versie staat gedefinieerd in .env file
+    container_name: kong-ai-gateway # Naam van de container voor herkenbaarheid
+    ports:
+      - "8000:8000/tcp" # Standaard proxy poort (HTTP)
+      - "8443:8443/tcp" # Proxy poort voor HTTPS
+      - "8001:8001/tcp" # Toegang tot Admin API (lokaal, enkel in deze setup) -> Werkt niet goed aangezien control plane node binnen Konnect gehost wordt. Hierdoor is de Admin API binnen Konnect gelokaliseerd, niet lokaal.
+
+    environment:
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001 # Zorgt ervoor dat Admin API lokaal bereikbaar is -> Opnieuw zelfde probleem als comment hierboven.
+      KONG_ROLE: data_plane # Zet de gateway in data plane modus
+      KONG_DATABASE: off # Geen database nodig (declaratieve YAML-file)
+      KONG_VITALS: off # Monitoring uitgeschakeld (niet nodig hier) -> Hiervoor veel mogelijkheden binnen Konnect zelf
+      KONG_CLUSTER_MTLS: pki # Mutual TLS authenticatie met certificaten
+      KONG_CLUSTER_CONTROL_PLANE: ${KONG_CLUSTER_CONTROL_PLANE} # Host + poort control plane
+      KONG_CLUSTER_SERVER_NAME: ${KONG_CLUSTER_SERVER_NAME} # Server naam control plane
+      KONG_CLUSTER_TELEMETRY_ENDPOINT: ${KONG_CLUSTER_TELEMETRY_ENDPOINT} # Endpoint voor metrics
+      KONG_CLUSTER_TELEMETRY_SERVER_NAME: ${KONG_CLUSTER_TELEMETRY_SERVER_NAME} # Server naam voor metrics
+      KONG_CLUSTER_CERT: ${KONG_CLUSTER_CERT} # Certificaat (uit Konnect)
+      KONG_CLUSTER_CERT_KEY: ${KONG_CLUSTER_CERT_KEY} # Private key (uit Konnect)
+      KONG_LUA_SSL_TRUSTED_CERTIFICATE: system # Vertrouw standaard CA's systeem
+      KONG_KONNECT_MODE: on # Zet Konnect-modus aan
+      KONG_LOG_LEVEL: debug # Loggingniveau op debug voor troubleshooting
+
+    depends_on: # Zorgt ervoor dat Redis wordt opgestart vóór Kong container
+      - redis-stack
+
+  redis-stack: # Redis Stack service - bevat alles wat nodig is voor vector database + caching
+    image: redis/redis-stack-server:7.4.0-v3  # Stabiele versie van Redis Stack, ondersteunt RedisJSON en RediSearch (nodig voor vector searches)
+    container_name: redis-stack
+    ports:
+      - "6379:6379"    # Redis poort - gebruikt door Kong plugins om vectors/cache op te vragen
+      - "8002:8001"    # Web UI poort (optioneel)
+    volumes:
+      - redis-data:/data  # Zorgt voor persistente opslag van Redis data, zoals vectoren en cache, zodat dit behouden blijft na herstarten container
+    restart: unless-stopped  # Herstart Redis Stack automatisch tenzij je het zelf handmatig stopt
+
+    # Redis configureren als vector database en cache
+    command:
+      [
+        "redis-server",
+        "--maxmemory", "256mb", # Max geheugengebruik van Redis -> 256MB
+        "--maxmemory-policy", "allkeys-lru", # Gebruikt LRU (Least Recently Used) beleid voor cache management
+        "--protected-mode", "no", # Schakelt protected mode uit voor lokale toegankelijkheid binnen Docker netwerk
+        "--loadmodule", "/opt/redis-stack/lib/redisearch.so", # Laad RediSearch module in voor vector zoekopdrachten
+        "--loadmodule", "/opt/redis-stack/lib/rejson.so" # Laad RedisJSON module in voor werken met gestructureerde data
+      ]
+
+# Docker volume voor opslag Redis data – zo blijft de cache en vector info behouden na herstarten container
+volumes:
+  redis-data:
