@@ -31,7 +31,7 @@ Bevat het configuratiebestand `Kong_AI-Gateway_PoC.template.yml`, waarin alle se
 
 Bestand met placeholders die dus vervangen worden door de variabelen in het `.env` bestand. Dit door gebruik te maken van `generate_PoC_config.sh`.
 
-    - `generate_PoC_config.sh`
+- `generate_PoC_config.sh`
 
 Script dat gebruikt wordt om het template configuratiebestand om te zetten naar het effectieve configuratiebestand. Dit vervangt de placeholders in het template bestand door de variabelen in het `.env` bestand en levert het bestand `Kong_AI-Gateway_PoC.yml` op.
 
