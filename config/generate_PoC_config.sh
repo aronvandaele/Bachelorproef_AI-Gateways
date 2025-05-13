@@ -1,12 +1,12 @@
 #!/bin/bash
     
-echo "Genereren van het configuratiebestand voor de PoC: Kong_AI-Gateway_PoC.yml"
+echo "Genereren van het configuratiebestand: Kong_AI-Gateway_PoC.yml"
 
 # Inladen variabelen uit .env bestand
 set -a # Alle volgende variabelen definiëren als omgevingsvariabelen
-source ../Using-Konnect/.env # Inladen .env bestand -> NOG VERVANGEN VOOR GIT REPO
+source .env # Inladen .env bestand
 
 # Vervangen placeholders binnen Kong_AI-Gateway_PoC.template.yml en nieuwe file genereren met de echte variabelen
-envsubst < Kong_AI-Gateway_PoC.template.yml > Kong_AI-Gateway_PoC.yml
+envsubst < config/Kong_AI-Gateway_PoC.template.yml > config/Kong_AI-Gateway_PoC.yml
    
-echo "Testconfiguratie gegenereerd: Kong_AI-Gateway_PoC.yml"
+echo "Configuratiebestand gegenereerd: Kong_AI-Gateway_PoC.yml"
