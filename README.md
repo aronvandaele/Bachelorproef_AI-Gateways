@@ -15,7 +15,7 @@ Zorg dat volgende tools geïnstalleerd zijn:
 
 ### deck installeren (Windows)
 
-1. Download de juiste versie via de [releasespagina](https://github.com/kong/deck/releases)
+1. Download de juiste versie via de [releasepagina](https://github.com/kong/deck/releases)
 2. Pak het bestand uit
 3. Voeg de map met `deck.exe` toe aan je systeem-`PATH`
 
